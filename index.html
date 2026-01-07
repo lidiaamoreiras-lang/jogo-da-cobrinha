@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Snake Game: Mobile & Desktop</title>
+    <title>Snake Game: Final Fix</title>
     <link rel="stylesheet" href="https://pyscript.net/releases/2023.05.1/pyscript.css" />
     <script defer src="https://pyscript.net/releases/2023.05.1/pyscript.js"></script>
     <style>
@@ -31,7 +31,8 @@
     <py-script>
 import random
 import asyncio
-from pyscript import Element, window
+from pyscript import Element
+from js import window, alert
 
 canvas = Element("snakeGame").element
 ctx = canvas.getContext("2d")
@@ -55,7 +56,7 @@ async def game_loop():
             nova_cabeca[1] < 0 or nova_cabeca[1] >= 400 or 
             nova_cabeca in cobra):
             jogo_rodando = False
-            window.alert(f"Fim de Jogo! Pontos: {score}")
+            alert(f"Fim de Jogo! Pontos: {score}")
             break
 
         cobra.insert(0, nova_cabeca)
@@ -79,7 +80,7 @@ def mudar_direcao_btn(dir_nome):
     elif dir_nome == "left" and direcao != [tamanho, 0]: direcao = [-tamanho, 0]
     elif dir_nome == "right" and direcao != [-tamanho, 0]: direcao = [tamanho, 0]
 
-def reiniciar():
+def reiniciar(*args):
     window.location.reload()
 
 # Inicia o jogo
