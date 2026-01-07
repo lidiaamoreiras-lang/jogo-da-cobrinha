@@ -3,83 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Neon: Controles Pro</title>
+    <title>Snake Neon: Controles em Cruz</title>
     <link rel="stylesheet" href="https://pyscript.net/releases/2023.05.1/pyscript.css" />
     <script defer src="https://pyscript.net/releases/2023.05.1/pyscript.js"></script>
     <style>
-        body { 
-            background: radial-gradient(circle, #1a1a2e 0%, #16213e 100%); 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            min-height: 100vh; margin: 0; color: #00d4ff; font-family: sans-serif; 
-        }
-        canvas { 
-            border: 4px solid #00d4ff; background-color: #0f3460; 
-            box-shadow: 0 0 25px rgba(0, 212, 255, 0.4); border-radius: 15px;
-            max-width: 90vw; 
-        }
+        body { background: radial-gradient(circle, #1a1a2e 0%, #16213e 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; color: #00d4ff; font-family: sans-serif; }
+        canvas { border: 4px solid #00d4ff; background-color: #0f3460; box-shadow: 0 0 25px rgba(0, 212, 255, 0.4); border-radius: 15px; max-width: 90vw; }
         .menu-velocidade { margin-bottom: 15px; display: flex; gap: 10px; }
-        .btn-niveis {
-            padding: 8px 15px; border: 2px solid #e94560; background: transparent;
-            color: white; cursor: pointer; border-radius: 5px; font-weight: bold;
-        }
+        .btn-niveis { padding: 8px 15px; border: 2px solid #e94560; background: transparent; color: white; cursor: pointer; border-radius: 5px; font-weight: bold; }
         .btn-niveis.ativo { background: #e94560; }
-
-        /* Estilo da Cruz de Comandos */
-        .controles-container { 
-            margin-top: 30px; 
-            display: grid; 
-            grid-template-columns: repeat(3, 70px); 
-            grid-template-rows: repeat(3, 70px); 
-            grid-gap: 10px; 
-        }
-        .btn-control { 
-            width: 70px; height: 70px; background: #333; border: 2px solid #00d4ff; 
-            border-radius: 15px; color: white; font-size: 30px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px #005a70; transition: 0.1s;
-        }
-        .btn-control:active { box-shadow: 0 0; transform: translateY(4px); background: #00d4ff; }
         
-        /* Posicionamento na Grid */
+        /* Layout em Cruz para os Botões */
+        .controles-container { margin-top: 25px; display: grid; grid-template-columns: repeat(3, 70px); grid-template-rows: repeat(3, 70px); grid-gap: 10px; }
+        .btn-control { width: 70px; height: 70px; background: #333; border: 2px solid #00d4ff; border-radius: 15px; color: white; font-size: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px #005a70; }
+        .btn-control:active { box-shadow: 0 0; transform: translateY(4px); background: #00d4ff; }
         .up { grid-column: 2; grid-row: 1; }
         .left { grid-column: 1; grid-row: 2; }
         .right { grid-column: 3; grid-row: 2; }
         .down { grid-column: 2; grid-row: 3; }
-
-        .btn-reset { margin-top: 25px; padding: 12px 25px; background: #e94560; border: none; color: white; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-reset { margin-top: 20px; padding: 10px 20px; background: #e94560; border: none; color: white; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
     <h1>PONTOS: <span id="score">0</span></h1>
-    
     <div class="menu-velocidade">
         <button id="btn-iniciante" class="btn-niveis" py-click="definir_nivel('iniciante')">Iniciante</button>
         <button id="btn-avancado" class="btn-niveis" py-click="definir_nivel('avancado')">Avançado</button>
     </div>
-
     <canvas id="snakeGame" width="400" height="400"></canvas>
-    
     <div class="controles-container">
         <button class="btn-control up" py-click="mudar_direcao_btn('up')">↑</button>
         <button class="btn-control left" py-click="mudar_direcao_btn('left')">←</button>
         <button class="btn-control right" py-click="mudar_direcao_btn('right')">→</button>
         <button class="btn-control down" py-click="mudar_direcao_btn('down')">↓</button>
     </div>
-
     <button class="btn-reset" py-click="reiniciar()">Reiniciar</button>
 
     <py-script>
-import random
-import asyncio
+import random, asyncio
 from pyscript import Element
 from js import window, alert, document
 
 canvas = Element("snakeGame").element
 ctx = canvas.getContext("2d")
 tamanho = 20
-cobra = [[100, 100], [80, 100], [60, 100]]
+cobra = [[100, 100], [80, 100]]
 direcao = [tamanho, 0]
 comida = [200, 200]
 score = 0
 jogo_rodando = True
-velocidade =
+velocidade = 0.25
+
+def desenhar_quadrado(x, y, cor, raio=5):
+    ctx.fillStyle = cor
+    ctx.beginPath()
+    ctx.roundRect(x+1, y+1, tamanho-2, tamanho-2, raio)
+    ctx.fill()
+
+def definir_nivel(nivel):
+    global velocidade
+    document.getElementById("btn-iniciante").classList.remove("ativo")
+    document.getElementById("btn-avancado").classList.remove("ativo")
+    if nivel == "iniciante":
+        velocidade = 0.25
+        document.getElementById("btn-iniciante").classList.add("ativo")
+    else:
+        velocidade = 0.12
+        document.getElementById("btn-avancado").classList.add("ativo")
+
+async def game_loop():
+    global direcao, comida, score, jogo_rodando
+    while jogo_rodando:
+        nova_cabeca = [cobra[0][0] + direcao[0], cobra[0][1] + direcao[1]]
+        if (nova_cabeca[0] < 0 or nova_cabeca[0] >= 400 or nova_cabeca[1] < 0 or nova_cabeca[1] >= 400 or nova_cabeca in cobra):
+            jogo_rodando = False
+            alert(f"Fim! Pontos: {score}")
+            break
+        cobra.insert(0, nova_cabeca)
+        if nova_cabeca == comida:
+            score += 10
+            Element("score").element.innerText = str(score)
+            comida = [random.randrange(0, 380, 20), random.randrange(0, 380, 20)]
+        else: cobra.pop()
+        ctx.clearRect(0, 0, 400, 400)
+        desenhar_quadrado(comida[0], comida[1], "red", 10)
+        for i, p in enumerate(cobra):
+            desenhar_quadrado(p[0], p[1], "#00ff88" if i==0 else "#00cc6a", 4)
+        await asyncio.sleep(velocidade)
+
+def mudar_direcao_btn(d):
+    global direcao
+    if d == "up" and direcao != [0, tamanho]: direcao = [0, -tamanho]
+    elif d == "down" and direcao != [0, -tamanho]: direcao = [0, tamanho]
+    elif d == "left" and direcao != [tamanho, 0]: direcao = [-tamanho, 0]
+    elif d == "right" and direcao != [-tamanho, 0]: direcao = [tamanho, 0]
+
+def reiniciar(*args): window.location.reload()
+
+document.getElementById("btn-iniciante").classList.add("ativo")
+asyncio.ensure_future(game_loop())
+    </py-script>
+</body>
+</html>
