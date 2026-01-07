@@ -48,7 +48,7 @@ def desenhar_quadrado(x, y, cor):
 
 async def game_loop():
     global direcao, comida, score, jogo_rodando
-    while jogo_running:
+    while jogo_rodando:
         nova_cabeca = [cobra[0][0] + direcao[0], cobra[0][1] + direcao[1]]
         
         if (nova_cabeca[0] < 0 or nova_cabeca[0] >= 400 or 
@@ -82,8 +82,7 @@ def mudar_direcao_btn(dir_nome):
 def reiniciar():
     window.location.reload()
 
-# Variável de controle corrigida para o loop
-jogo_running = True
+# Inicia o jogo
 asyncio.ensure_future(game_loop())
     </py-script>
 </body>
