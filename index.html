@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Snake Game: Mobile & Desktop</title>
+    <link rel="stylesheet" href="https://pyscript.net/releases/2023.05.1/pyscript.css" />
+    <script defer src="https://pyscript.net/releases/2023.05.1/pyscript.js"></script>
+    <style>
+        body { background-color: #1a1a1a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; color: white; font-family: sans-serif; }
+        canvas { border: 5px solid #333; background-color: #000; max-width: 90vw; }
+        .controles-container { margin-top: 20px; display: grid; grid-template-areas: ". up ." "left down right"; grid-gap: 10px; }
+        .btn-control { width: 60px; height: 60px; background: #444; border: none; border-radius: 10px; color: white; font-size: 24px; font-weight: bold; cursor: pointer; }
+        .btn-control:active { background: #2ecc71; }
+        .up { grid-area: up; } .down { grid-area: down; } .left { grid-area: left; } .right { grid-area: right; }
+        .btn-reset { margin-top: 20px; padding: 10px 20px; background: #e74c3c; border: none; border-radius: 5px; color: white; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Pontos: <span id="score">0</span></h1>
+    <canvas id="snakeGame" width="400" height="400"></canvas>
+    
+    <div class="controles-container">
+        <button class="btn-control up" py-click="mudar_direcao_btn('up')">↑</button>
+        <button class="btn-control left" py-click="mudar_direcao_btn('left')">←</button>
+        <button class="btn-control down" py-click="mudar_direcao_btn('down')">↓</button>
+        <button class="btn-control right" py-click="mudar_direcao_btn('right')">→</button>
+    </div>
+
+    <button class="btn-reset" py-click="reiniciar()">Reiniciar</button>
+
+    <py-script src="./jogo.py"></py-script>
+</body>
+</html>
